@@ -1,0 +1,21 @@
+body {
+    /* Establece la imagen de fondo y la centra */
+    background-image: url('./img/rana2.jpg');
+    background-size: cover; /* Ajusta el tamaño de la imagen para cubrir toda la pantalla */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita la repetición de la imagen */
+  }
+  /* styles.css */
+
+/* Estilos para el footer */
+.footer {
+    background-color: #333; /* Color de fondo */
+    color: white; /* Color del texto */
+    padding: 20px; /* Espaciado interno */
+    text-align: center; /* Alineación del texto */
+    position: fixed; /* Fija el footer en la parte inferior de la ventana */
+    left: 0; /* Alinea el footer al borde izquierdo */
+    bottom: 0; /* Alinea el footer en la parte inferior */
+    width: 100%; /* Ancho completo */
+  }
+  
