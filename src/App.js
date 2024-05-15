@@ -24,7 +24,7 @@ function App() {
       return;
     }
 
-    Axios.post("http://localhost:3006/create", {
+    Axios.post("http://localhost:42069/create", {
       nombre: nombre,
       curso: curso,
       rut: rut,
@@ -53,7 +53,7 @@ function App() {
       return;
     }
 
-    Axios.put(`http://localhost:3006/update/${id}`, {
+    Axios.put(`http://localhost:42069/update/${id}`, {
       nombre: nombre,
       curso: curso,
       rut: rut,
@@ -87,7 +87,7 @@ function App() {
       confirmButtonText: 'Si, eliminar'
     }).then((result) => {
       if (result.isConfirmed){
-        Axios.delete(`http://localhost:3006/delete/${id}`)
+        Axios.delete(`http://localhost:42069/delete/${id}`)
           .then(() => {
             getEstudiantes();
             limpiarCampos();
@@ -116,7 +116,7 @@ function App() {
   };
 
   const getEstudiantes = () => {
-    Axios.get("http://localhost:3006/estudiantes")
+    Axios.get("http://localhost:42069/estudiantes")
       .then((response) => {
         setEstudiantes(response.data);
       })
