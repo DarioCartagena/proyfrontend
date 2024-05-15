@@ -12,13 +12,14 @@ function App() {
   const [editar, setEditar] = useState(false);
   const [estudiantesList, setEstudiantes] = useState([]);
   const [fecha, setFecha] = useState("");
+  const [Hora_de_Ingreso, setHora_de_Ingreso] = useState("");
 
   useEffect(() => {
     getEstudiantes();
   }, []);
 
   const add = () => {
-    if (!nombre || !curso || !rut || !fecha) {
+    if (!nombre || !curso || !rut || !fecha || !Hora_de_Ingreso) {
       alert("Todos los campos son requeridos");
       return;
     }
@@ -27,14 +28,15 @@ function App() {
       nombre: nombre,
       curso: curso,
       rut: rut,
-      fecha: fecha 
+      fecha: fecha,
+      Hora_de_Ingreso: Hora_de_Ingreso
     })
     .then(() => {
       getEstudiantes();
       limpiarCampos();
       Swal.fire({
         title: "<strong>Registro Exitoso</strong>",
-        html: "<i>El estudiante <strong> "+nombre+"</strong> fue registrado con éxito </i>",
+        html: `<i>El estudiante <strong>${nombre}</strong> fue registrado con éxito </i>`,
         icon: 'success',
         timer: 3000
       });
@@ -42,29 +44,28 @@ function App() {
     .catch((error) => {
       console.error(error);
       alert("Error al registrar estudiante: " + error.message);
-      alert("No se encontró el recurso solicitado en el servidor.");
     });
   };
 
   const update = () => {
-    if (!id || !nombre || !curso || !rut || !fecha) {
+    if (!id || !nombre || !curso || !rut || !fecha || !Hora_de_Ingreso) {
       alert("Todos los campos son requeridos");
       return;
     }
 
-    Axios.put("http://localhost:3006/update", {
+    Axios.put(`http://localhost:3006/update/${id}`, {
       nombre: nombre,
-      id: id,
       curso: curso,
       rut: rut,
-      fecha: fecha 
+      fecha: fecha,
+      Hora_de_Ingreso: Hora_de_Ingreso
     })
     .then(() => {
       getEstudiantes();
       limpiarCampos();
       Swal.fire({
         title: "<strong>Actualización Exitosa</strong>",
-        html: "<i>El estudiante <strong> "+nombre+"</strong> fue actualizado con éxito </i>",
+        html: `<i>El estudiante <strong>${nombre}</strong> fue actualizado con éxito </i>`,
         icon: 'success',
         timer: 3000
       });
@@ -72,14 +73,13 @@ function App() {
     .catch((error) => {
       console.error(error);
       alert("Error al actualizar estudiante: " + error.message);
-      alert("No se encontró el recurso solicitado en el servidor.");
     });
   };
 
-  const deleteEst = (val) => {
+  const deleteEst = (id) => {
     Swal.fire({
       title: 'Confirmar Eliminado?',
-      html:"<i>Realmente desea eliminar a <strong>"+val.nombre+"</strong>?</i>",
+      html:`<i>Realmente desea eliminar al estudiante con ID ${id}?</i>`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -87,13 +87,13 @@ function App() {
       confirmButtonText: 'Si, eliminar'
     }).then((result) => {
       if (result.isConfirmed){
-        Axios.delete(`http://localhost:3006/delete/${val.id}`)
+        Axios.delete(`http://localhost:3006/delete/${id}`)
           .then(() => {
             getEstudiantes();
             limpiarCampos();
             Swal.fire({
               icon: 'success',
-              title: `${val.nombre} fue eliminado.`,
+              title: `Estudiante con ID ${id} fue eliminado.`,
               showConfirmButton:false,
               timer:2000
             });
@@ -101,13 +101,6 @@ function App() {
           .catch((error) => {
             console.error(error);
             alert("Error al eliminar estudiante");
-            alert("No se logró eliminar el empleado!");
-            Swal.fire({
-              icon:'error',
-              title:'Oops...',
-              text:'No se logró eliminar el empleado!',
-              footer: error.message === "Network Error" ? "Intente más tarde" : ""
-            });
           });
       }
     });
@@ -117,6 +110,8 @@ function App() {
     setNombre('');
     setCurso('');
     setRut('');
+    setId('');
+    setHora_de_Ingreso("");
     setEditar(false);
   };
 
@@ -137,6 +132,9 @@ function App() {
     setCurso(val.curso);
     setRut(val.rut);
     setId(val.id);
+    setFecha(val.fecha);
+    setHora_de_Ingreso(val.Hora_de_Ingreso);
+
   };
 
   return (
@@ -193,6 +191,18 @@ function App() {
                 aria-label="Fecha" 
                 aria-describedby="basic-addon4" />
             </div>
+            <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon5">Hora de Ingreso:</span>
+               <input 
+              type="time-local" 
+               value={Hora_de_Ingreso} 
+                onChange={(event) => setHora_de_Ingreso(event.target.value)} 
+                className="form-control" 
+                aria-label="Hora de Ingreso" 
+                aria-describedby="basic-addon5" 
+                  />
+            </div>
+
           </div>
           <div className="card-footer text-muted">
             {editar ? (
@@ -215,6 +225,7 @@ function App() {
               <th scope="col">Curso</th>
               <th scope="col">RUT</th>
               <th scope="col">Fecha</th>
+              <th scope="col">Hora_de_Ingreso</th>
               <th scope="col">Acciones</th>
             </tr>
           </thead>
@@ -226,10 +237,11 @@ function App() {
                 <td>{val.curso}</td>
                 <td>{val.rut}</td>
                 <td>{val.fecha}</td>
+                <td>{val.Hora_de_Ingreso}</td>
                 <td>
                   <div className="btn-group" role="group" aria-label="Basic example">
                     <button type="button" onClick={() => editarEstudiante(val)} className="btn btn-info">Editar</button>
-                    <button type="button" onClick={() => deleteEst(val)} className="btn btn-danger">Eliminar</button>
+                    <button type="button" onClick={() => deleteEst(val.id)} className="btn btn-danger">Eliminar</button>
                   </div>
                 </td>
               </tr>
